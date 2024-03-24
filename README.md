@@ -39,11 +39,15 @@
         <td>https://arxiv.org/pdf/2302.04156</td>
         <td>PromptHate</td>
         <td>
-        1. - <br>
-        2. 
+        
+        1. Extracts image text using `EasyOCR`
+
         </td>
     </tr>
 </table>
+
+| <td rowspan="2">Github Repo</td> | <td colspan="3">Research Papers</td> |
+| --- | --- | --- | --- |
 
 ## Datasets:
 [Datasets for OSPC AI Singapore](https://drive.google.com/drive/folders/1n-60QbFi1XJzyJ7RXuJ7PKflDr6_qJKS?usp=sharing) can be found here. It contains the following datasets:
