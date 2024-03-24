@@ -10,17 +10,17 @@
 <table>
     <tr>
         <th colspan=3>Research Papers</th>
-        <th rowspan=2>Github Repo</th>
+        <th style="width: 10%;" rowspan=2>Github Repo</th>
     </tr>
     <tr>
         <th>Model Name</th>
         <th>Description</th>
-        <th>Paper URL</th>
+        <th style="width: 10%">Paper URL</th>
     </tr>
     <tr>
         <td>NA</td>
         <td>
-        1. USed VisualBERT.
+        1. Used VisualBERT.
         </td>
         <td>https://arxiv.org/abs/2012.12975</td>
         <td>https://github.com/rizavelioglu/hateful_memes-hate_detectron/tree/main</td>
@@ -28,7 +28,7 @@
     <tr>
         <td>MOMENTA</td>
         <td>
-        1. Used CLIP. <br>
+        1. Used CLIP.<br>
         2. Use of online google vision APIs for OCR, object detection, attribute detection
         </td>
         <td>https://arxiv.org/pdf/2109.05184</td>
