@@ -39,7 +39,7 @@
         <td>https://arxiv.org/pdf/2302.04156</td>
         <td>PromptHate</td>
         <td>  
-        1. Extracts image text using <pre>EasyOCR</pre> <br>
+        1. Extracts image text using <code>EasyOCR</code> <br>
         2. Generates image caption using 
         </td>
     </tr>
