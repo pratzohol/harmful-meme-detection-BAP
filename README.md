@@ -38,10 +38,9 @@
         <td>https://gitlab.com/bottle_shop/safe/prompthate</td>
         <td>https://arxiv.org/pdf/2302.04156</td>
         <td>PromptHate</td>
-        <td>
-        
-        1. Extracts image text using `EasyOCR`
-
+        <td>  
+        1. Extracts image text using <pre>EasyOCR</pre> <br>
+        2. Generates image caption using 
         </td>
     </tr>
 </table>
