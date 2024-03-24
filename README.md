@@ -8,43 +8,45 @@
 ## Reference Repos
 
 <table>
-    <tr>
-        <th colspan=3>Research Papers</th>
-        <th style="width: 10%;" rowspan=2>Github Repo</th>
-    </tr>
-    <tr>
-        <th>Model Name</th>
-        <th>Description</th>
-        <th style="width: 10%">Paper URL</th>
-    </tr>
-    <tr>
-        <td>NA</td>
-        <td>
-        1. Used VisualBERT.
-        </td>
-        <td>https://arxiv.org/abs/2012.12975</td>
-        <td>https://github.com/rizavelioglu/hateful_memes-hate_detectron/tree/main</td>
-    </tr>
-    <tr>
-        <td>MOMENTA</td>
-        <td>
-        1. Used CLIP.<br>
-        2. Use of online google vision APIs for OCR, object detection, attribute detection
-        </td>
-        <td>https://arxiv.org/pdf/2109.05184</td>
-        <td>https://github.com/LCS2-IIITD/MOMENTA</td>
-    </tr>
-    <tr>
-        <td>PromptHate</td>
-        <td>  
-        1. Extracts image text using <a href=https://github.com/JaidedAI/EasyOCR><code>EasyOCR</code></a><br>
-        2. This is followed by in-painting to remove the text from the image using <a href=https://github.com/open-mmlab/mmediting><code>MMEditing</code></a>.<br>
-        3. Generates image caption using <code>ClipCap</code> (pre-trained model : works well for low-res img).<br> 
-        4. Additionally, it uses Google vision web-entity detection API and <code>FairFace</code>(pre-trained model : extract demographic information of the person from image)  <br>
-        </td>
-        <td>https://arxiv.org/pdf/2302.04156</td>
-        <td>https://gitlab.com/bottle_shop/safe/prompthate</td>
-    </tr>
+<tr>
+<th colspan=3>Research Papers</th>
+<th rowspan=2>Github Repo</th>
+</tr>
+<tr>
+<th>Model Name</th>
+<th>Description</th>
+<th>Paper URL</th>
+</tr>
+<tr>
+<td>NA</td>
+<td>
+1. Used VisualBERT.
+</td>
+<td>https://arxiv.org/abs/2012.12975</td>
+<td>https://github.com/rizavelioglu/hateful_memes-hate_detectron/tree/main</td>
+</tr>
+<tr>
+<td>MOMENTA</td>
+<td>
+1. Used CLIP.<br>
+2. Use of online google vision APIs for OCR, object detection, attribute detection
+</td>
+<td>https://arxiv.org/pdf/2109.05184</td>
+<td>https://github.com/LCS2-IIITD/MOMENTA</td>
+</tr>
+<tr>
+<td>PromptHate</td>
+<td>
+
+1. Extracts image text using [`EasyOCR`](https://github.com/JaidedAI/EasyOCR) <a href=https://github.com/JaidedAI/EasyOCR><code>EasyOCR</code></a><br>
+2. This is followed by in-painting to remove the text from the image using <a href=https://github.com/open-mmlab/mmediting><code>MMEditing</code></a>.<br>
+3. Generates image caption using <code>ClipCap</code> (pre-trained model : works well for low-res img).<br> 
+4. Then, it uses Google vision web-entity detection API and <code>FairFace</code>(pre-trained model : extract demographic information of the person from image)<br>
+
+</td>
+<td>https://arxiv.org/pdf/2302.04156</td>
+<td>https://gitlab.com/bottle_shop/safe/prompthate</td>
+</tr>
 </table>
 
 ## Datasets:
