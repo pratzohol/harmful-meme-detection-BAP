@@ -7,7 +7,7 @@
 
 ## Reference Repos
 
-|                                                                        ||      Additional Info                |
+||| Additional Info ||
 |                              GitHub Repo                               |             Paper                |      Model Name    | Description     |
 |                                   :--:                                 |              :--:                |     :--:    |    :--:     |
 | https://github.com/rizavelioglu/hateful_memes-hate_detectron/tree/main | https://arxiv.org/abs/2012.12975 | NA | NA |
