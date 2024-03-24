@@ -21,7 +21,9 @@
         <td>https://github.com/rizavelioglu/hateful_memes-hate_detectron/tree/main</td>
         <td>https://arxiv.org/abs/2012.12975</td>
         <td>NA</td>
-        <td>VisualBERT</td>
+        <td>
+        1. USed VisualBERT.
+        </td>
     </tr>
     <tr>
         <td>https://github.com/LCS2-IIITD/MOMENTA</td>
@@ -30,6 +32,15 @@
         <td>
         1. Used CLIP. <br>
         2. Use of online google vision APIs for OCR, object detection, attribute detection
+        </td>
+    </tr>
+    <tr>
+        <td>https://gitlab.com/bottle_shop/safe/prompthate</td>
+        <td>https://arxiv.org/pdf/2302.04156</td>
+        <td>PromptHate</td>
+        <td>
+        1. - <br>
+        2. 
         </td>
     </tr>
 </table>
@@ -45,5 +56,5 @@
 
 1. For LLMs, a 7B parameter model takes 28GB of GPU memory. It can be reduced to 14GB using float16 precision and to 7GB using int8 precision.
 
-2.
+2. 
 
