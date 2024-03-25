@@ -16,7 +16,7 @@
 <th>Description</th>
 <th>Link to Paper and Git repo</th>
 </tr>
-<!----- Row 1 ---->
+<!----- Row 1 ----->
 <tr>
 <td>NA</td>
 <td>
@@ -28,20 +28,20 @@
 [Paper](https://arxiv.org/abs/2012.12975) | [Git Repo](https://github.com/rizavelioglu/hateful_memes-hate_detectron/tree/main)
 </td>
 </tr>
-<!--- Row 2 ---->
+<!----- Row 2 ----->
 <tr>
 <td>MOMENTA</td>
 <td>
 
-1. Used CLIP.
-2. Use of online google vision APIs for OCR, object detection, attribute detection
+1. ![](./img/momenta.png)
+2. Use of online google vision APIs for OCR, object detection, attribute detection.
 </td>
 <td>
 
 [Paper](https://arxiv.org/pdf/2109.05184) | [Git Repo](https://github.com/LCS2-IIITD/MOMENTA)
 </td>
 </tr>
-<!--- Row 3 ---->
+<!----- Row 3 ----->
 <tr>
 <td>PromptHate</td>
 <td>
@@ -50,16 +50,29 @@
 2. This is followed by in-painting to remove the text from the image using [`MMEditing`](https://github.com/open-mmlab/mmediting)
 3. Generates image caption using `ClipCap` (pre-trained model : works well for low-res img)
 4. Then, it uses Google vision web-entity detection API and `FairFace`(pre-trained model : extract demographic information of the person from image)
+5. Then, the image caption and image text are passed through `RoBERTa` model to get the final prediction using MLM prompting.
 </td>
 <td>
 
 [Paper](https://arxiv.org/pdf/2302.04156) | [Git Repo](https://gitlab.com/bottle_shop/safe/prompthate)
 </td>
 </tr>
+<!----- Row 4 ----->
+<tr>
+<td>Hate-CLIPper</td>
+<td>
+
+1. Doesn't use additional input features like object bounding boxes, face detection and text attributes.
+2. 
+</td>
+<td>
+
+[Paper](https://arxiv.org/pdf/2210.05916) | [Git Repo](https://github.com/gokulkarthik/hateclipper)
+</td>
 </table>
 
 ## Datasets:
-[Datasets for OSPC AI Singapore](https://drive.google.com/drive/folders/1n-60QbFi1XJzyJ7RXuJ7PKflDr6_qJKS?usp=sharing) can be found here. It contains the following datasets:
+All the     [Datasets for OSPC AI Singapore](https://drive.google.com/drive/folders/1n-60QbFi1XJzyJ7RXuJ7PKflDr6_qJKS?usp=sharing) can be found here. It contains the following datasets:
 
 1. [Facebook harmful meme detection challenge dataset](https://ai.meta.com/blog/hateful-memes-challenge-and-data-set/)
 2. [Total defence memes - singapore](https://arxiv.org/pdf/2305.17911.pdf)
@@ -68,6 +81,5 @@
 ## Models:
 
 1. For LLMs, a 7B parameter model takes 28GB of GPU memory. It can be reduced to 14GB using float16 precision and to 7GB using int8 precision.
-
 2. 
 
