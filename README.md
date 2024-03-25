@@ -32,9 +32,8 @@
 <tr>
 <td>MOMENTA</td>
 <td>
-
-![momenta-arch](main/img/momenta.png)
-> Use of online google vision APIs for OCR, object detection, attribute detection.
+<img src="img/momenta.png">
+<blockquote>Use of online google vision APIs for OCR, object detection, attribute detection.</blockquote>
 </td>
 <td>
 
