@@ -33,8 +33,8 @@
 <td>MOMENTA</td>
 <td>
 
-1. ![](./img/momenta.png)
-2. Use of online google vision APIs for OCR, object detection, attribute detection.
+![](./img/momenta.png)
+>[!CAUTION] Use of online google vision APIs for OCR, object detection, attribute detection.
 </td>
 <td>
 
@@ -62,8 +62,16 @@
 <td>Hate-CLIPper</td>
 <td>
 
-1. Doesn't use additional input features like object bounding boxes, face detection and text attributes.
-2. 
+1. Image _i_ and text _t_ is passed through CLIP image and text encoders to obtain unimodal features $f_i$ and $f_t$.
+2. To align the text and image feature space, $f_i$ and $f_t$ are passed through a trainable projection layer.
+3. We then get $p_i$ and $p_t$ which have the same dimensionality of _n_.
+4. Then, a _feature interaction matrix_(FIM) is computed by taking the outer product of $p_i$ and $p_t$, i.e., FIM = $p_i \otimes p_t$.
+5. We can do 3 things now :
+    - Concat : concat the $p_i$ and $p_t$ to get a vector of dimension $2n$
+    - Cross-fusion : Flatten the FIM to get a vector of dimension $n^2$
+    - Align-fusion : Take the diagonal of the FIM to get a vector of dimension $n$.
+6. It is then passed through FFN to obtai final classification.
+>[!IMPORTANT] Doesn't use additional input features like object bounding boxes, face detection and text attributes.
 </td>
 <td>
 
