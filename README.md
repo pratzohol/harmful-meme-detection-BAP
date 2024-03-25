@@ -73,7 +73,9 @@
     - Cross-fusion : Flatten the FIM to get a vector of dimension $n^2$
     - Align-fusion : Take the diagonal of the FIM to get a vector of dimension $n$.
 6. It is then passed through FFN to obtai final classification.
+
 >[!IMPORTANT] Doesn't use additional input features like object bounding boxes, face detection and text attributes.
+
 </td>
 <td>
 
