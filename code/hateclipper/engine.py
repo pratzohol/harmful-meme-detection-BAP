@@ -12,16 +12,15 @@ import torchmetrics
 from transformers import CLIPModel, AutoConfig, AutoModel
 
 class CLIPClassifier(pl.LightningModule):
-
     def __init__(self, args, fine_grained_labels, compute_fine_grained_metrics):
         super().__init__()
 
         self.caption_mode = args.caption_mode
         self.use_pretrained_map = args.use_pretrained_map
-        self.num_mapping_layers = args.num_mapping_layers 
-        self.map_dim = args.map_dim  
+        self.num_mapping_layers = args.num_mapping_layers
+        self.map_dim = args.map_dim
         self.fusion = args.fusion
-        self.num_pre_output_layers = args.num_pre_output_layers 
+        self.num_pre_output_layers = args.num_pre_output_layers
         self.lr = args.lr
         self.weight_decay = args.weight_decay
         self.weight_image_loss = args.weight_image_loss
@@ -46,13 +45,13 @@ class CLIPClassifier(pl.LightningModule):
             self.precision_score = torchmetrics.Precision()
             self.recall = torchmetrics.Recall()
             self.f1 = torchmetrics.F1Score()
-        
+
         self.clip = CLIPModel.from_pretrained(args.clip_pretrained_model)
         if args.local_pretrained_weights != 'none':
             state_dict = torch.load(args.local_pretrained_weights)['state_dict']
             state_dict = {k[5:]:v for k,v in state_dict.items() if k.startswith('clip')}
             self.clip.load_state_dict(state_dict)
-        if args.image_encoder == 'clip': 
+        if args.image_encoder == 'clip':
             self.image_encoder = copy.deepcopy(self.clip.vision_model)
         else:
             raise ValueError()
@@ -63,7 +62,7 @@ class CLIPClassifier(pl.LightningModule):
             self.text_encoder = AutoModel.from_pretrained(args.text_encoder, config=config)
         else:
             raise ValueError()
-        
+
         if self.use_pretrained_map:
             self.image_map = nn.Sequential(
                 copy.deepcopy(self.clip.visual_projection),
@@ -85,7 +84,7 @@ class CLIPClassifier(pl.LightningModule):
 
             self.image_map = nn.Sequential(*image_map_layers)
             self.text_map = nn.Sequential(*text_map_layers)
-        
+
         if args.fusion in ['align', 'align_shuffle']:
             pre_output_input_dim = self.map_dim
         elif args.fusion == 'concat':
@@ -95,8 +94,8 @@ class CLIPClassifier(pl.LightningModule):
         elif args.fusion == 'align_concat':
             pre_output_input_dim = self.map_dim*3
         elif args.fusion == 'attention_m':
-            self.gen_query = nn.Linear(self.map_dim, self.map_dim//4) 
-            self.gen_key = nn.Linear(self.map_dim, self.map_dim//4) 
+            self.gen_query = nn.Linear(self.map_dim, self.map_dim//4)
+            self.gen_key = nn.Linear(self.map_dim, self.map_dim//4)
             self.soft = nn.Softmax(dim=1)
             pre_output_input_dim = self.map_dim*2
 
@@ -400,12 +399,12 @@ class CLIPClassifier(pl.LightningModule):
                 logits_for_super.append(torch.relu(logits))
                 preds_proxy = torch.sigmoid(logits)
                 preds = (preds_proxy >= 0.5).long()
-                output[f'{fine_grained_label}_loss'] = self.cross_entropy_loss(logits, batch[fine_grained_label].float()) 
-            logits_for_super = torch.stack(logits_for_super, dim=1) # [batch_size, 15]       
+                output[f'{fine_grained_label}_loss'] = self.cross_entropy_loss(logits, batch[fine_grained_label].float())
+            logits_for_super = torch.stack(logits_for_super, dim=1) # [batch_size, 15]
             logits = self.output_super(logits_for_super).squeeze(dim=1)
             preds_proxy = torch.sigmoid(logits)
             preds = (preds_proxy >= 0.5).long()
-            output['super_loss'] = self.cross_entropy_loss(logits, batch['labels'].float()) 
+            output['super_loss'] = self.cross_entropy_loss(logits, batch['labels'].float())
             output['super_accuracy'] = self.acc(preds, batch['labels'])
             output['super_auroc'] = self.auroc(preds_proxy, batch['labels'])
 
@@ -421,7 +420,7 @@ class CLIPClassifier(pl.LightningModule):
                 output[f'{fine_grained_label}_precision'] = self.precision_score(preds, batch[fine_grained_label])
                 output[f'{fine_grained_label}_recall'] = self.recall(preds, batch[fine_grained_label])
                 output[f'{fine_grained_label}_f1'] = self.f1(preds, batch[fine_grained_label])
-            logits_for_super = torch.stack(logits_for_super, dim=1) # [batch_size, 15]       
+            logits_for_super = torch.stack(logits_for_super, dim=1) # [batch_size, 15]
             logits = self.output_super(logits_for_super).squeeze(dim=1)
             preds_proxy = torch.sigmoid(logits)
             preds = (preds_proxy >= 0.5).long()
@@ -439,7 +438,7 @@ class CLIPClassifier(pl.LightningModule):
             return features
 
         return output
-        
+
     def training_step(self, batch, batch_idx):
         output = self.common_step(batch, batch_idx, calling_function='training')
 
@@ -447,7 +446,7 @@ class CLIPClassifier(pl.LightningModule):
             image_loss = output['image_loss']
         else:
             image_loss = 0
-        
+
         if self.weight_text_loss > 0:
             text_loss = output['text_loss']
         else:
@@ -481,7 +480,7 @@ class CLIPClassifier(pl.LightningModule):
         if self.fine_grained_labels and self.dataset in ['original', 'masked', 'inpainted']:
             self.log('train/fine_grained_loss', fine_grained_loss)
             self.log('train/super_loss', super_loss)
-        
+
         return total_loss
 
     def validation_step(self, batch, batch_idx):
@@ -491,12 +490,12 @@ class CLIPClassifier(pl.LightningModule):
             image_loss = output['image_loss']
         else:
             image_loss = 0
-        
+
         if self.weight_text_loss > 0:
             text_loss = output['text_loss']
         else:
             text_loss = 0
-        
+
         if self.fine_grained_labels and self.compute_fine_grained_metrics and self.dataset in ['original', 'masked', 'inpainted']:
             fine_grained_loss = torch.mean(torch.Tensor([output[f'{fine_grained_label}_loss'] for fine_grained_label in self.fine_grained_labels]))
             super_loss = output['super_loss']
@@ -505,7 +504,7 @@ class CLIPClassifier(pl.LightningModule):
             super_loss = 0.0
 
         total_loss = output['loss'] + self.weight_image_loss * image_loss + self.weight_text_loss * text_loss + self.weight_fine_grained_loss * fine_grained_loss + self.weight_super_loss * super_loss
-        
+
         self.log(f'val/total_loss', total_loss)
         self.log(f'val/loss', output['loss'])
         self.log(f'val/accuracy', output['accuracy'])
@@ -530,11 +529,11 @@ class CLIPClassifier(pl.LightningModule):
                 self.log(f'val-fine-grained/{fine_grained_label}_precision', output[f'{fine_grained_label}_precision'])
                 self.log(f'val-fine-grained/{fine_grained_label}_recall', output[f'{fine_grained_label}_recall'])
                 self.log(f'val-fine-grained/{fine_grained_label}_f1', output[f'{fine_grained_label}_f1'])
-            
+
             self.log(f'val/super_loss', output['super_loss'])
             self.log(f'val/super_accuracy', output['super_accuracy'])
             self.log(f'val/super_auroc', output['super_auroc'])
-        
+
         return total_loss
 
     def test_step(self, batch, batch_idx, dataloader_idx):
@@ -549,9 +548,9 @@ class CLIPClassifier(pl.LightningModule):
             calling_function = 'validation'
         elif dataloader_idx == 1:
             calling_function = 'training'
-            
+
         output = self.common_step(batch, batch_idx, calling_function=calling_function)
-        
+
         self.log(f'{prefix}/accuracy', output['accuracy'])
         self.log(f'{prefix}/auroc', output['auroc'])
         if self.dataset in ['tamil', 'prop']:
@@ -570,8 +569,8 @@ class CLIPClassifier(pl.LightningModule):
                     self.log(f'{prefix}-fine-grained/{fine_grained_label}_precision', output[f'{fine_grained_label}_precision'])
                     self.log(f'{prefix}-fine-grained/{fine_grained_label}_recall', output[f'{fine_grained_label}_recall'])
                     self.log(f'{prefix}-fine-grained/{fine_grained_label}_f1', output[f'{fine_grained_label}_f1'])
-                
-        
+
+
         return output
 
     def training_epoch_end(self, validation_step_outputs):
@@ -606,6 +605,6 @@ class CLIPClassifier(pl.LightningModule):
 
 def create_model(args, fine_grained_labels):
     compute_fine_grained_metrics = True
-    model = CLIPClassifier(args=args, fine_grained_labels=fine_grained_labels, compute_fine_grained_metrics = compute_fine_grained_metrics)
+    model = CLIPClassifier(args=args, fine_grained_labels=fine_grained_labels, compute_fine_grained_metrics=compute_fine_grained_metrics)
 
     return model

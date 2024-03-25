@@ -36,10 +36,10 @@ class HatefulMemesDataset(Dataset):
             self.fine_grained_labels = self.pc_columns + self.attack_columns
         else:
             self.fine_grained_labels = []
-        
+
     def __len__(self):
         return len(self.df)
-        
+
     def __getitem__(self, idx):
         row = self.df.iloc[idx]
         item = {}
@@ -72,10 +72,10 @@ class TamilMemesDataset(Dataset):
         self.df = pd.read_csv(self.info_file)
         self.df = self.df[self.df['split']==self.split].reset_index(drop=True)
         self.fine_grained_labels = []
-        
+
     def __len__(self):
         return len(self.df)
-        
+
     def __getitem__(self, idx):
         row = self.df.iloc[idx]
         item = {}
@@ -102,10 +102,10 @@ class PropMemesDataset(Dataset):
         self.df = self.df.join(pd.DataFrame(mlb.transform(self.df['labels']),
                                             columns=mlb.classes_,
                                             index=self.df.index))
-        
+
     def __len__(self):
         return len(self.df)
-        
+
     def __getitem__(self, idx):
         row = self.df.iloc[idx]
         item = {}
@@ -135,7 +135,7 @@ class CustomCollator(object):
             text_output = self.text_processor([item['text'] + ' [SEP] ' + item['caption'] for item in batch], padding=True, return_tensors="pt", truncation=True)
         else:
             text_output = self.text_processor([item['text'] for item in batch], padding=True, return_tensors="pt", truncation=True)
-        
+
         if self.args.dataset in ['original', 'masked', 'inpainted', 'tamil']:
             caption_output = self.text_processor([item['caption'] for item in batch], padding=True, return_tensors="pt", truncation=True)
             labels = torch.LongTensor([item['label'] for item in batch])
@@ -177,13 +177,13 @@ def load_dataset(args, split):
         image_folder = 'data/hateful_memes_masked/'
     elif args.dataset == 'inpainted':
         image_folder = 'data/hateful_memes_inpainted/'
-    
+
     if args.dataset == 'tamil':
         dataset = TamilMemesDataset(root_folder='data/Tamil_troll_memes', split=split, image_size=args.image_size)
     elif args.dataset == 'prop':
         dataset = PropMemesDataset(root_folder='data/propaganda-techniques-in-memes/data/datasets/propaganda/defaults', split=split, image_size=args.image_size)
     else:
-        dataset = HatefulMemesDataset(root_folder='data/hateful_memes', image_folder=image_folder, split=split, 
+        dataset = HatefulMemesDataset(root_folder='data/hateful_memes', image_folder=image_folder, split=split,
             labels=args.labels, image_size=args.image_size)
 
     return dataset

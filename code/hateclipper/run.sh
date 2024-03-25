@@ -1,4 +1,5 @@
-python3 main.py --dataset original \
+python main.py \
+    --dataset original \
     --labels original \
     --multilingual_tokenizer_path "none" \
     --clip_pretrained_model "openai/clip-vit-large-patch14"  \
@@ -20,4 +21,3 @@ python3 main.py --dataset original \
     --weight_fine_grained_loss 0 \
     --weight_super_loss 0 \
     --max_epochs 20
-    
