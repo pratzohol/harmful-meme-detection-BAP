@@ -1,6 +1,6 @@
 # hateful-meme-detection
 
-## Resources:
+## Resources
 
 1. [Official site of OSPC](https://ospc.aisingapore.org/)
 2. [Submission Guide for OSPC](https://github.com/AISG-Technology-Team/AISG-Online-Safety-Challenge-Submission-Guide)
@@ -34,8 +34,8 @@
 <td>
 
 ![](./img/momenta.png)
->[!CAUTION] 
->Use of online google vision APIs for OCR, object detection, attribute detection.
+> [!CAUTION] 
+> Use of online google vision APIs for OCR, object detection, attribute detection.
 </td>
 <td>
 
@@ -80,14 +80,14 @@
 </td>
 </table>
 
-## Datasets:
+## Datasets
 All the     [Datasets for OSPC AI Singapore](https://drive.google.com/drive/folders/1n-60QbFi1XJzyJ7RXuJ7PKflDr6_qJKS?usp=sharing) can be found here. It contains the following datasets:
 
 1. [Facebook harmful meme detection challenge dataset](https://ai.meta.com/blog/hateful-memes-challenge-and-data-set/)
 2. [Total defence memes - singapore](https://arxiv.org/pdf/2305.17911.pdf)
 3. Palash's Sir Dataset (RMMHS)
 
-## Models:
+## Models
 
 1. For LLMs, a 7B parameter model takes 28GB of GPU memory. It can be reduced to 14GB using float16 precision and to 7GB using int8 precision.
 2. 
