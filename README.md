@@ -92,5 +92,6 @@ All the     [Datasets for OSPC AI Singapore](https://drive.google.com/drive/fold
 ## Models
 
 1. For LLMs, a 7B parameter model takes 28GB of GPU memory. It can be reduced to 14GB using float16 precision and to 7GB using int8 precision.
-2. 
+
+![](img/momenta.png)
 
