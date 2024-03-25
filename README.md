@@ -31,11 +31,9 @@
 <!----- Row 2 ----->
 <tr>
 <td>MOMENTA</td>
-<td markdown=1>
-
-![momenta](img/momenta.png)
-> Use of online google vision APIs for OCR, object detection, attribute detection.
-
+<td>
+<img src="./img/momenta.png" alt="momenta">
+Use of online google vision APIs for OCR, object detection, attribute detection.
 </td>
 <td>
 
