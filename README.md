@@ -37,6 +37,7 @@
 
 > [!CAUTION] 
 > Use of online google vision APIs for OCR, object detection, attribute detection.
+
 </td>
 <td>
 
