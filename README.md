@@ -34,7 +34,7 @@
 <td>
 
 <img src="./img/momenta.png">
-<blockquote>Use of online google vision APIs for OCR, object detection, attribute detection.</blockquote>
+Use of online google vision APIs for OCR, object detection, attribute detection.
 </td>
 <td>
 
