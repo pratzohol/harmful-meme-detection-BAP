@@ -33,9 +33,9 @@
 <td>MOMENTA</td>
 <td>
 
-![momenta-arch](img/momenta.png)
+<img src="img/momenta.png">
 
-Use of online google vision APIs for OCR, object detection, attribute detection.
+> Use of online google vision APIs for OCR, object detection, attribute detection.
 </td>
 <td>
 
@@ -93,5 +93,4 @@ All the     [Datasets for OSPC AI Singapore](https://drive.google.com/drive/fold
 
 1. For LLMs, a 7B parameter model takes 28GB of GPU memory. It can be reduced to 14GB using float16 precision and to 7GB using int8 precision.
 
-![](img/momenta.png)
 
