@@ -86,6 +86,7 @@ All the     [Datasets for OSPC AI Singapore](https://drive.google.com/drive/fold
 1. [Facebook harmful meme detection challenge dataset](https://ai.meta.com/blog/hateful-memes-challenge-and-data-set/)
 2. [Total defence memes - singapore](https://arxiv.org/pdf/2305.17911.pdf)
 3. Palash's Sir Dataset (RMMHS)
+4. [Propanganda Meme Dataset](https://aclanthology.org/2021.acl-long.516.pdf)
 
 ## Models
 

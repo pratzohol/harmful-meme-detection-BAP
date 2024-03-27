@@ -1,10 +1,8 @@
 import argparse
 import os
-
 import wandb
 from .datasets import CustomCollator, load_dataset
 from engine import create_model
-
 from pytorch_lightning import Trainer, seed_everything
 from pytorch_lightning.callbacks import ModelCheckpoint
 from pytorch_lightning.loggers import WandbLogger
@@ -73,7 +71,6 @@ def get_arg_parser():
     return parser
 
 def main(args):
-
     # load dataset
     if args.dataset in ['original', 'masked', 'inpainted']:
         dataset_train = load_dataset(args=args, split='train')
