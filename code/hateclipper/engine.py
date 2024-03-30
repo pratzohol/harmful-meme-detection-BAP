@@ -220,7 +220,7 @@ class CLIPClassifier(pl.LightningModule):
             wtd_i2 = text_features * prob_2[:, None]
             features = torch.cat((wtd_i1,wtd_i2), 1) # [batch_size, 2*d]
         else:
-                raise ValueError()
+            raise ValueError()
 
         if self.caption_mode.startswith('parallel'):
             if self.fusion in ['align', 'align_shuffle']:
