@@ -17,3 +17,6 @@ wget -P "$TESSDATA_DIR" https://github.com/tesseract-ocr/tessdata_best/raw/main/
 
 # Download Malay trainneddata
 wget -P "$TESSDATA_DIR" https://github.com/tesseract-ocr/tessdata_best/raw/main/msa.traineddata
+
+# Download OSD traineddata
+wget -P "$TESSDATA_DIR" https://github.com/tesseract-ocr/tessdata_best/raw/main/osd.traineddata

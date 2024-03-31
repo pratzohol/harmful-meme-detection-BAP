@@ -14,18 +14,36 @@ from pytesseract import Output
 import numpy as np
 
 
-def get_meme_text(image):
-    config = "-l eng+chi_sim+chi_tra+tam+msa --psm 4 --oem 1"
+def preprocess_image(im):
+    """Summary
 
-    text = pytesseract.image_to_string(image, config=config)
-    d = pytesseract.image_to_data(image, output_type=Output.DICT, config=config)
+    Args:
+        im (np.array): Image in BGR format after using cv2.imread(<filePath>)
+
+    Returns:
+        np.array :
+    """
+    im = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+    im = cv2.bilateralFilter(im, 9, 55, 60)
+    _, im = cv2.threshold(im, 230, 255, cv2.THRESH_BINARY_INV)
+    return im
+
+
+def extract_text_from_meme(im):
+    im = preprocess_image(im)
+
+    tess_config = r'-l eng+chi_sim+chi_tra+tam+msa --tessdata-dir /usr/share/tesseract-ocr/tessdata --oem 1 --psm 11'
+    txt = pytesseract.image_to_string(im, config=tess_config)
+    txt = txt.replace('\n\n', '\n').rstrip()
+
+    d = pytesseract.image_to_data(im, output_type=Output.DICT, config=tess_config)
     n_boxes = len(d["level"])
     coordinates = []
 
     for i in range(n_boxes):
         (x, y, w, h) = (d["left"][i], d["top"][i], d["width"][i], d["height"][i])
         coordinates.append((x, y, w, h))
-    return text, coordinates
+    return txt, coordinates[1:]
 
 
 def get_image_mask(image, coordinates_to_mask):
@@ -44,24 +62,8 @@ def get_image_mask(image, coordinates_to_mask):
 
 def get_image_inpainted(image, image_mask):
     # Perform image inpainting to remove text from the original image
-    image_inpainted = cv2.inpaint(
-        image, image_mask, inpaintRadius=3, flags=cv2.INPAINT_TELEA
-    )
-
+    image_inpainted = cv2.inpaint(image, image_mask, inpaintRadius=3, flags=cv2.INPAINT_TELEA)
     return image_inpainted
-
-
-def classifier(image, text):
-    # Random number generator to simulate a proba output
-    # float values ranging from 0-1
-    proba = random.random()
-
-    # Using proba and some pre-fixed threshold to simulate a label output
-    # label values of int : Harmful = 1, Benign = 0
-    threshold = 0.5
-    label = int(proba >= threshold)
-
-    return proba, label
 
 
 def process_line_by_line(*, filepath):
@@ -69,25 +71,19 @@ def process_line_by_line(*, filepath):
     im = cv2.imread(filepath)
 
     # 2. Get meme text =============================================== #
-    text, coordinates = get_meme_text(image=im)
+    text, coordinates = extract_text_from_meme(im)
 
     # 3. Get inpainting ============================================== #
     # Get image mask for image inpainting
     im_mask = get_image_mask(image=im, coordinates_to_mask=coordinates)
 
-    # (OPTIONAL) If necessary to read/write to /tmp file system for reading later
-    # Write to /tmp folder
-    cv2.imwrite("/tmp/temp_image_mask.png", im_mask)
-
-    # (OPTIONAL) Read from /tmp folder
-    im_mask = cv2.imread("/tmp/temp_image_mask.png", cv2.IMREAD_GRAYSCALE)
-
-    # Perform image inpainting
+    # 4. Perform image inpainting
     im_inpainted = get_image_inpainted(image=im, image_mask=im_mask)
+    im_inpainted = cv2.cvtColor(im_inpainted, cv2.COLOR_BGR2RGB) # im_inpainted is in BGR format, convert to RGB
 
-    # 4. Get classification =========================================== #
+    # 5. Get classification =========================================== #
     # Process text and image for harmful/benign
-    proba, label = classifier(image=im_inpainted, text=text)
+    proba, label = 1, 0
 
     return proba, label
 
