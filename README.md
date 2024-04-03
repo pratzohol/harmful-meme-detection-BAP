@@ -70,7 +70,7 @@
     - Concat : concat the $p_i$ and $p_t$ to get a vector of dimension $2n$
     - Cross-fusion : Flatten the FIM to get a vector of dimension $n^2$
     - Align-fusion : Take the diagonal of the FIM to get a vector of dimension $n$.
-6. It is then passed through FFN to obtai final classification.
+6. It is then passed through FFN to obtain final classification.
 
 > Doesn't use additional input features like object bounding boxes, face detection and text attributes.
 </td>

@@ -1,0 +1,17 @@
+# Datsaset-related
+dataset: fb-meme # [fb-meme, prop]
+
+
+# CLIP-related
+clip_image_size: 224
+clip_pretrained_model: openai/clip-vit-base-patch32
+
+
+# Hateclipper-specific
+fusion: align # [align, concat, cross]
+
+# Training-related
+device: 0 # '123' for cpu and '0,1,2' for gpu
+batch_size: 16
+lr: 1.e-4 # decimal is important otherwise it is read as string
+seed: null
