@@ -90,23 +90,18 @@ def process_line_by_line(*, filepath):
 
 
 if __name__ == "__main__":
-    if torch.cuda.is_available():
-        print("CUDA is available")
-    else:
-        print("CUDA is not available")
-
     # Iteration loop to get new image filepath from sys.stdin:
-    # for line in sys.stdin:
-    #     # IMPORTANT: Please ensure any trailing whitespace (eg: \n) is removed. This may impact some modules to open the filepath
-    #     image_path = line.rstrip()
+    for line in sys.stdin:
+        # IMPORTANT: Please ensure any trailing whitespace (eg: \n) is removed. This may impact some modules to open the filepath
+        image_path = line.rstrip()
 
-    #     try:
-    #         # Process the image
-    #         proba, label = process_line_by_line(filepath=image_path)
+        try:
+            # Process the image
+            proba, label = process_line_by_line(filepath=image_path)
 
-    #         # Ensure each result for each image_path is a new line
-    #         sys.stdout.write(f"{proba:.4f}\t{label}\n")
+            # Ensure each result for each image_path is a new line
+            sys.stdout.write(f"{proba:.4f}\t{label}\n")
 
-    #     except Exception as e:
-    #         # Output to any raised/caught error/exceptions to stderr
-    #         sys.stderr.write(str(e))
+        except Exception as e:
+            # Output to any raised/caught error/exceptions to stderr
+            sys.stderr.write(str(e))

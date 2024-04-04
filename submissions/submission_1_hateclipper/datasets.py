@@ -17,7 +17,7 @@ class HatefulMemesDataset(Dataset):
         self.labels = labels
         self.image_size = image_size
 
-        self.info_file = os.path.join(root_folder, 'fb-hateful_memes.csv')
+        self.info_file = os.path.join(root_folder, 'fb_hateful_memes_info.csv')
         self.df = pd.read_csv(self.info_file)
         self.df = self.df[self.df['split']==self.split].reset_index(drop=True)
         float_cols = self.df.select_dtypes(float).columns
