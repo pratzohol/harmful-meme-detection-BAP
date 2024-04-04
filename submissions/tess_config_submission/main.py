@@ -90,25 +90,22 @@ def process_line_by_line(filepath):
 if __name__ == "__main__":
     file_paths = []
 
-    with multiprocessing.Pool(4) as pool:
-        ans = pool.map(process_line_by_line, ["./local_test/test_images/image108.png" for _ in range(100)])
-
     # Iteration loop to get new image filepath from sys.stdin:
-    # for line in sys.stdin:
-    #     # IMPORTANT: Please ensure any trailing whitespace (eg: \n) is removed. This may impact some modules to open the filepath
-    #     image_path = line.rstrip()
-    #     file_paths.append(image_path)
+    for line in sys.stdin:
+        # IMPORTANT: Please ensure any trailing whitespace (eg: \n) is removed. This may impact some modules to open the filepath
+        image_path = line.rstrip()
+        file_paths.append(image_path)
 
-    # try:
-    #     with multiprocessing.Pool(2) as pool:
-    #         ans = pool.map(process_line_by_line, file_paths)
+    try:
+        with multiprocessing.Pool(4) as pool:
+            ans = pool.map(process_line_by_line, file_paths)
 
-    #     # Ensure each result for each image_path is a new line
-    #     for proba, label in ans:
-    #         sys.stdout.write(f"{proba:.4f}\t{label}\n")
+        # Ensure each result for each image_path is a new line
+        for proba, label in ans:
+            sys.stdout.write(f"{proba:.4f}\t{label}\n")
 
-    # except Exception as e:
-    #     # Output to any raised/caught error/exceptions to stderr
-    #     sys.stderr.write(str(e))
+    except Exception as e:
+        # Output to any raised/caught error/exceptions to stderr
+        sys.stderr.write(str(e))
 
 

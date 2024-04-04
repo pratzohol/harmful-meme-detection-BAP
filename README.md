@@ -90,6 +90,7 @@ All the     [Datasets for OSPC AI Singapore](https://drive.google.com/drive/fold
 
 ## Notes
 
-1. Tesseract OCR (tessdata_best) : Takes around "1 hrs 30 mins" (2.9 it/s) for 1800 images. Quite slow !!!
-2. Tesseract OCR (tessdata) : Takes around "1 hr 10 mins" (2.3 it/s). Faster than tessdata_best.
-3. 
+1. Tesseract OCR (`tessdata_best`) : Takes around "1 hrs 30 mins" (2.9 it/s) for 1800 images. Quite slow !!!
+2. Tesseract OCR (`tessdata`) : Takes around "1 hr 10 mins" (2.3 it/s). Faster than `tessdata_best`.
+3. In above two cases, turbo-boost was on. Now, turning off the turbo-boost, ran the `tessdata_best` on 272 images. Using `multiprocessing.Pool(4)`, it took "8 mins 33 secs". Using simple for-loop, it takes ">20 mins". Using `multiprocessing.Pool(3)`, it took "9 mins 06 secs". 
+4. Scaling the time taken above to 1800 images, using multiprocess.Pool(4), it would take around "1 hr" only.
