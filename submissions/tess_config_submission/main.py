@@ -2,6 +2,8 @@
 import sys
 import logging
 import random
+from tqdm import trange
+from tqdm import tqdm
 
 import cv2
 import pytesseract
@@ -9,6 +11,7 @@ from pytesseract import Output
 import numpy as np
 # import torch
 
+import multiprocessing
 
 def preprocess_image(im):
     """Summary
@@ -28,7 +31,7 @@ def preprocess_image(im):
 def extract_text_from_meme(im):
     im = preprocess_image(im)
 
-    tess_config = r'-l eng+chi_sim+chi_tra+tam+msa --tessdata-dir /usr/share/tesseract-ocr/tessdata --oem 1 --psm 11'
+    tess_config = r'-l eng+chi_sim+chi_tra+tam+msa --tessdata-dir /usr/share/tesseract-ocr/tessdata_best --oem 1 --psm 11'
     txt = pytesseract.image_to_string(im, config=tess_config)
     txt = txt.replace('\n\n', '\n').rstrip()
 
@@ -62,7 +65,7 @@ def get_image_inpainted(image, image_mask):
     return image_inpainted
 
 
-def process_line_by_line(*, filepath):
+def process_line_by_line(filepath):
     # 1. Open image filepath ========================================= #
     im = cv2.imread(filepath)
 
@@ -85,10 +88,11 @@ def process_line_by_line(*, filepath):
 
 
 if __name__ == "__main__":
-    fp = "./local_test/test_images/image108.png"
-    for i in range(1800):
-        proba, label, text = process_line_by_line(filepath=fp)
-        print(proba, label, text)
+    pool_obj = multiprocessing.Pool(6)
+    fp = './local_test/test_images/image108.png'
+    ans = list(tqdm(pool_obj.imap(process_line_by_line, [fp for _ in range(1800)])))
+    print(len(ans))
+    pool_obj.close()
 
     # Iteration loop to get new image filepath from sys.stdin:
     # for line in sys.stdin:

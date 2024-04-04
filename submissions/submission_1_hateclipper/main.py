@@ -26,7 +26,7 @@ def preprocess_image(im):
     """
     im = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
     im = cv2.bilateralFilter(im, 9, 55, 60)
-    _, im = cv2.threshold(im, 230, 255, cv2.THRESH_BINARY_INV)
+    _, im = cv2.threshold(im, 235, 255, cv2.THRESH_BINARY_INV)
     return im
 
 

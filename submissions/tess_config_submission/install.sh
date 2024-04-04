@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the directory where Tesseract puts its language data files
-TESSDATA_DIR="/usr/share/tesseract-ocr/tessdata/"
+TESSDATA_DIR="/usr/share/tesseract-ocr/tessdata_best/"
 
 # Download English traineddata
 wget -P "$TESSDATA_DIR" https://github.com/tesseract-ocr/tessdata_best/raw/main/eng.traineddata

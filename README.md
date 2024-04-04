@@ -88,8 +88,8 @@ All the     [Datasets for OSPC AI Singapore](https://drive.google.com/drive/fold
 3. Palash's Sir Dataset (RMMHS)
 4. [Propanganda Meme Dataset](https://aclanthology.org/2021.acl-long.516.pdf)
 
-## Models
+## Notes
 
-1. For LLMs, a 7B parameter model takes 28GB of GPU memory. It can be reduced to 14GB using float16 precision and to 7GB using int8 precision.
-
-
+1. Tesseract OCR (tessdata_best) : Takes around "1 hrs 30 mins" (2.9 it/s) for 1800 images. Quite slow !!!
+2. Tesseract OCR (tessdata) : Takes around "1 hr 10 mins" (2.3 it/s). Faster than tessdata_best.
+3. 
