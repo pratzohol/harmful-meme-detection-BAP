@@ -33,7 +33,7 @@ def preprocess_image(im):
 def extract_text_from_meme(im):
     im = preprocess_image(im)
 
-    tess_config = r'-l eng+chi_sim+chi_tra+tam+msa --tessdata-dir /usr/share/tesseract-ocr/tessdata --oem 1 --psm 11'
+    tess_config = r'-l eng+chi_sim+chi_tra+tam+msa --tessdata-dir /usr/share/tesseract-ocr/tessdata_best --oem 1 --psm 11'
     txt = pytesseract.image_to_string(im, config=tess_config)
     txt = txt.replace('\n\n', '\n').rstrip()
 

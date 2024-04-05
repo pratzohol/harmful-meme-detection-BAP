@@ -1,5 +1,6 @@
 datasets
 .vscode
-submission_2_llama
+submissions/submission_2_llama/adapter_weights
+submissions/submission_2_llama/original_llama
 containers
 local_test
