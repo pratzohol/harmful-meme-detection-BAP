@@ -4,3 +4,6 @@ submissions/submission_2_llama/adapter_weights
 submissions/submission_2_llama/original_llama
 containers
 local_test
+submissions/submission_hateclipper/wandb
+submissions/submission_hateclipper/checkpoints
+submissions/submission_hateclipper/models--openai--clip-vit-large-patch14

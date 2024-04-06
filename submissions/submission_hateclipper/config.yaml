@@ -1,0 +1,33 @@
+exp_name: run-1
+
+# Datsaset-related
+dataset: fb-meme # [fb-meme, prop]
+
+
+# CLIP-related
+clip_image_size: 224
+clip_pretrained_model: models--openai--clip-vit-large-patch14/snapshots/32bd64288804d66eefd0ccbe215aa642df71cc41/
+image_encoder: clip
+text_encoder: clip
+
+
+# Hateclipper-specific
+fusion: cross # [align, concat, cross]
+num_mapping_layers: 1
+map_dim: 32
+num_pre_output_layers: 1
+use_pretrained_map: False
+
+# Training-related
+devices: 1
+batch_size: 16
+lr: 1.e-5 # decimal is important otherwise it is read as string
+seed: 101
+weight_decay: 1.e-4
+
+# Pytorch Lightning-related
+max_epochs: 20
+max_steps: -1
+gradient_clip_val: 0.1
+log_every_n_steps: 50
+check_val_every_n_epoch: 2
