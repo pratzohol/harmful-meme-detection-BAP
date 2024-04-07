@@ -180,9 +180,14 @@ class CLIPClassifier(pl.LightningModule):
     def validation_step(self, batch, batch_idx):
         output = self.common_step(batch)
 
-        self.log(f'val/loss', output['loss'])
-        self.log(f'val/accuracy', output['accuracy'])
-        self.log(f'val/auroc', output['auroc'])
+        self.log_dict(
+            {
+                'val/loss': output['loss'],
+                'val/accuracy': output['accuracy'],
+                'val/auroc': output['auroc']
+            },
+            on_epoch=True
+        )
 
         if self.dataset in ['tamil', 'prop']:
             self.log('val/precision', output['precision'])
@@ -191,7 +196,7 @@ class CLIPClassifier(pl.LightningModule):
 
         return output['loss']
 
-    def test_step(self, batch, batch_idx, dataloader_idx):
+    def test_step(self, batch, batch_idx):
         output = self.common_step(batch)
 
         self.log(f'test/accuracy', output['accuracy'])

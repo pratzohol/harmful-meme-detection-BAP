@@ -8,11 +8,12 @@ from transformers import CLIPTokenizer, CLIPProcessor, AutoTokenizer
 
 
 class FBHatefulMemesDataset(Dataset):
-    def __init__(self, root_folder, split='train', image_size=224):
+    def __init__(self, root_folder, split='train', image_size=224, text='original'):
         super(FBHatefulMemesDataset, self).__init__()
         self.root_folder = root_folder
         self.split = split
         self.image_size = image_size
+        self.text = text
 
         self.info_file = os.path.join(root_folder, 'fb_hateful_memes_info.csv')
         self.df = pd.read_csv(self.info_file)
@@ -26,7 +27,12 @@ class FBHatefulMemesDataset(Dataset):
         row = self.df.iloc[idx]
         item = {}
         item['image'] = Image.open(f"{self.root_folder}/{row['img']}").convert('RGB').resize((self.image_size, self.image_size))
-        item['text'] = row['text']
+
+        if self.text == 'original':
+            item['text'] = row['text']
+        elif self.text == 'easyocr':
+            item['text'] = row['text_easyocr']
+
         item['label'] = row['label']
         item['idx_meme'] = row['id']
         return item
@@ -130,11 +136,11 @@ class CustomCollator(object):
 
 
 def load_dataset(args, split):
-    root_folder = "/home/prateek/harmful-meme-detection/datasets/fb-meme"
+    root_folder = "/home/pratzohol/google-drive/work-stuff/harmful-meme-detection/datasets/fb-meme"
     if args.dataset == 'tamil':
         dataset = TamilMemesDataset(root_folder=root_folder, split=split, image_size=args.clip_image_size)
     elif args.dataset == 'prop':
         dataset = PropMemesDataset(root_folder=root_folder, split=split, image_size=args.clip_image_size)
     else:
-        dataset = FBHatefulMemesDataset(root_folder=root_folder, split=split, image_size=args.clip_image_size)
+        dataset = FBHatefulMemesDataset(root_folder=root_folder, split=split, image_size=args.clip_image_size, text=args.text)
     return dataset

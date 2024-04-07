@@ -1,7 +1,8 @@
-exp_name: run-1
+exp_name: run-6
 
 # Datsaset-related
 dataset: fb-meme # [fb-meme, prop]
+text: original # [eaysocr, original]
 
 
 # CLIP-related
@@ -20,13 +21,13 @@ use_pretrained_map: False
 
 # Training-related
 devices: 1
-batch_size: 16
-lr: 1.e-5 # decimal is important otherwise it is read as string
+batch_size: 128
+lr: 0.01 # decimal is important otherwise it is read as string
 seed: 101
 weight_decay: 1.e-4
 
 # Pytorch Lightning-related
-max_epochs: 20
+max_epochs: 100
 max_steps: -1
 gradient_clip_val: 0.1
 log_every_n_steps: 50

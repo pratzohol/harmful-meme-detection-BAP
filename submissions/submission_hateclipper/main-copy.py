@@ -81,9 +81,9 @@ def main(args):
         callbacks=[checkpoint_callback], deterministic=True
     )
 
-    trainer.fit(model, train_dataloaders=dataloader_train,val_dataloaders=dataloader_val)
+    trainer.fit(model, train_dataloaders=dataloader_train, val_dataloaders=dataloader_val)
     if args.dataset == 'fb-meme':
-        trainer.test(ckpt_path='best', dataloaders=[dataloader_val, dataloader_test])
+        trainer.test(ckpt_path='best', dataloaders=dataloader_val)
     elif args.dataset == 'tamil':
         trainer.test(ckpt_path='best', dataloaders=[dataloader_val, dataloader_val])
     elif args.dataset == 'prop':
