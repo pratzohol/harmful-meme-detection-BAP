@@ -1,4 +1,4 @@
-exp_name: run-6
+exp_name: run-8
 
 # Datsaset-related
 dataset: fb-meme # [fb-meme, prop]
@@ -21,8 +21,8 @@ use_pretrained_map: False
 
 # Training-related
 devices: 1
-batch_size: 128
-lr: 0.01 # decimal is important otherwise it is read as string
+batch_size: 64
+lr: 1 # decimal is important otherwise it is read as string
 seed: 101
 weight_decay: 1.e-4
 
