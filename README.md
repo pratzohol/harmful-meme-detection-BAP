@@ -95,3 +95,29 @@ All the     [Datasets for OSPC AI Singapore](https://drive.google.com/drive/fold
 3. In above two cases, turbo-boost was on. Now, turning off the turbo-boost, ran the `tessdata_best` on 272 images. Using `multiprocessing.Pool(4)`, it took "8 mins 33 secs". Using simple for-loop, it takes ">20 mins". Using `multiprocessing.Pool(3)`, it took "9 mins 06 secs". 
 4. Scaling the time taken above to 1800 images, using multiprocess.Pool(4), it would take around "1 hr" only.
 5. CLIP can handle images of size 224x224 upto 336x336.
+
+6. Using HateCLIPper, the (auroc, acc) obtained on fb-meme data validation-set are:
+
+    - _run_4_easyocr_ : (0.729, 0.614)
+    - _run-3-easyocr_ : (0.739, 0.634)
+    - _run-2-easyocr_ : (0.743, 0.646)
+    - _run-1-easyocr_ : (0.740, 0.632)
+    - _run-10_ : (0.70, 0.656)
+    - _run-9_ : (0.733, 0.634)
+    - _run-8_ : (0.5, 0.5)
+    - _run-7_ : (0.737, 0.642)
+    - _run-6_ : (0.7408, 0.666)
+
+7. Using HateCLIPper, the (auroc, acc) obtained on RMMHS data are:
+
+    - _run_4_easyocr_ : (0.815, 0.68)
+    - _run-3-easyocr_ : (0.843, 0.67)
+    - _run-2-easyocr_ : (0.865, 0.75)
+    - _run-1-easyocr_ : (0.87, 0.73)
+    - _run-10_ : (0.888, 0.789)
+    - _run-9_ : (0.854, 0.68)
+    - _run-8_ : (0.5, 0.45)
+    - _run-7_ : (0.847, 0.789)
+    - _run-6_ : (0.872, 0.835)
+
+8. So, based on above data and charts from wandb, I decided to go with `run-1-easyocr` (`run-9` was second best contender).

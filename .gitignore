@@ -8,3 +8,5 @@ local_test
 submissions/submission_hateclipper/wandb
 submissions/submission_hateclipper/checkpoints
 submissions/submission_hateclipper/models--openai--clip-vit-large-patch14
+*.ckpt
+.EasyOCR
