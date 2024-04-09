@@ -1,60 +1,130 @@
-# Standard Python Library
+import easyocr
 import sys
-import multiprocessing
 
-import cv2
-import pytesseract
-from pytesseract import Output
+from hateclipper_dataset import CustomCollator, load_dataset
+from hateclipper_engine import CLIPClassifier
+
+from torch.utils.data import DataLoader
 import numpy as np
+import torch
+import yaml
+import random
+import argparse
+from tqdm import tqdm
+
+import warnings
+warnings.filterwarnings("ignore")
 
 
-def preprocess_image(im):
-    """Summary
+# reader = easyocr.Reader(['en', 'ch_sim', 'ch_tra', 'ms', 'ta'])
+reader = easyocr.Reader(['ch_tra', 'en'], model_storage_directory='./.EasyOCR/model', user_network_directory='./.EasyOCR/user_network')
 
-    Args:
-        im (np.array): Image in BGR format after using cv2.imread(<filePath>)
-
-    Returns:
-        np.array :
-    """
-    im = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
-    im = cv2.bilateralFilter(im, 7, 55, 60)
-    _, im = cv2.threshold(im, 235, 255, cv2.THRESH_BINARY_INV)
-    return im
-
-
-def extract_text_from_meme(im):
-    im = preprocess_image(im)
-
-    tess_config = r'-l eng+chi_sim+chi_tra+tam+msa --tessdata-dir /usr/share/tesseract-ocr/tessdata_best --oem 1 --psm 11'
-    txt = pytesseract.image_to_string(im, config=tess_config)
-    txt = txt.replace('\n', ' ').strip()
-    return txt
+def move_to_cuda(x):
+    if isinstance(x, dict):
+        for k, v in x.items():
+            x[k] = move_to_cuda(v)
+    elif isinstance(x, tuple):
+        x = tuple(move_to_cuda(v) for v in x)
+    else:
+        x = x.to("cuda")
+    return x
 
 
-def process_line_by_line(filepath):
-    im = cv2.imread(filepath)
-    text = extract_text_from_meme(im)
-    return text
+def main(args, texts, filepaths):
+    dataset = load_dataset(args, texts, filepaths)
+
+    collator = CustomCollator(args)
+    dataloader = DataLoader(dataset, batch_size=args.batch_size, collate_fn=collator)
+
+    # create model
+    model = CLIPClassifier(args).to("cuda")
+    model.load_state_dict(torch.load(args.checkpoint, map_location="cuda")["state_dict"])
+
+    probas = []
+    labels = []
+
+    for batch in tqdm(dataloader):
+        with torch.inference_mode():
+            batch = move_to_cuda(batch)
+            prob, pred = model(batch)
+            probas += prob
+            labels += pred
+
+    return probas, labels
 
 
 if __name__ == "__main__":
-    file_paths = []
+    with open("config.yaml", "r") as f:
+        args = yaml.safe_load(f)
 
-    # Iteration loop to get new image filepath from sys.stdin:
+        if args["seed"] is not None:
+            SEED = args['seed']
+            torch.manual_seed(SEED)
+            torch.cuda.manual_seed(SEED)
+            torch.backends.cudnn.deterministic = True
+            np.random.seed(SEED)
+            random.seed(SEED)
+
+    args = argparse.Namespace(**args)
+
+    # file_paths = [
+    #     "./local_test/test_images/image108.png",
+    #     "./local_test/test_images/image2248.png",
+    #     "./local_test/test_images/image2259.png",
+    #     "./local_test/test_images/image286.png",
+    #     "./local_test/test_images/image124.png",
+    #     "./local_test/test_images/image80.png",
+    #     "./local_test/test_images/image194.png",
+    #     "./local_test/test_images/image2214.png",
+    #     "./local_test/test_images/image2201.png",
+    #     "./local_test/test_images/image2202.png",
+    #     "./local_test/test_images/image2210.png",
+    #     "./local_test/test_images/image2204.png",
+    #     "./local_test/test_images/image2209.png",
+    #     "./local_test/test_images/image31.png",
+    #     "./local_test/test_images/image2219.png",
+    #     "./local_test/test_images/image276.png",
+    #     "./local_test/test_images/image57.png",
+    #     "./local_test/test_images/image2241.png",
+    #     "./local_test/test_images/image69.png",
+    #     "./local_test/test_images/image312.png"
+    # ]
+    # file_paths = file_paths * 30
+
+    file_paths = []
     for line in sys.stdin:
-        # IMPORTANT: Please ensure any trailing whitespace (eg: \n) is removed. This may impact some modules to open the filepath
         image_path = line.rstrip()
         file_paths.append(image_path)
 
-    try:
-        with multiprocessing.Pool(4) as pool:
-            texts = pool.map(process_line_by_line, file_paths)
+    # import pandas as pd
+    # df = pd.read_csv("../../datasets/fb-meme/fb_hateful_memes_info.csv")
+    # root_folder = "../../datasets/fb-meme/"
+    # indices = df["split"] == 'val'
+    # file_paths = (root_folder + df["img"][indices]).to_list()
+    # true_labels = df["label"][indices].astype(int).to_list()
 
-        for txt in texts:
-            proba, label = 1, 0
+    try:
+        texts = []
+        for fp in tqdm(file_paths):
+            text = reader.readtext(fp, detail=0)
+            text = " ".join(text)
+            texts.append(text)
+
+        probas, labels = main(args, texts, file_paths)
+
+        # import torchmetrics
+        # acc = torchmetrics.Accuracy(task='binary')
+        # auroc = torchmetrics.AUROC(task='binary')
+
+        # accuracy = acc(torch.tensor(labels), torch.tensor(true_labels))
+        # auroc_score = auroc(torch.tensor(probas), torch.tensor(true_labels))
+
+        # print(f"Accuracy: {accuracy:.4f}")
+        # print(f"AUROC: {auroc_score:.4f}")
+
+        for i in range(len(labels)):
+            proba, label = probas[i], labels[i]
             sys.stdout.write(f"{proba:.4f}\t{label}\n")
 
     except Exception as e:
-        # Output to any raised/caught error/exceptions to stderr
         sys.stderr.write(str(e))

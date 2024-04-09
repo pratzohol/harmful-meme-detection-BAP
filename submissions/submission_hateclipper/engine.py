@@ -17,57 +17,29 @@ class CLIPClassifier(pl.LightningModule):
         super().__init__()
         self.dataset = args.dataset
 
-        self.use_pretrained_map = args.use_pretrained_map
         self.num_mapping_layers = args.num_mapping_layers
         self.map_dim = args.map_dim
         self.num_pre_output_layers = args.num_pre_output_layers
 
         self.fusion = args.fusion
         self.lr = args.lr
-
-        # decay and regularization params
         self.weight_decay = args.weight_decay
 
         self.acc = torchmetrics.Accuracy(task='binary')
-        if self.dataset == 'prop':
-            self.auroc = torchmetrics.AUROC(num_classes=22)
-            self.precision_score = torchmetrics.Precision(mdmc_average='global')
-            self.recall = torchmetrics.Recall(mdmc_average='global')
-            self.f1 = torchmetrics.F1Score(mdmc_average='global')
-        else:
-            self.auroc = torchmetrics.AUROC(task='binary')
-            self.precision_score = torchmetrics.Precision(task='binary')
-            self.recall = torchmetrics.Recall(task='binary')
-            self.f1 = torchmetrics.F1Score(task='binary')
+        self.auroc = torchmetrics.AUROC(task='binary')
 
         self.clip = CLIPModel.from_pretrained("openai/clip-vit-large-patch14", cache_dir="./")
         if args.image_encoder == 'clip':
             self.image_encoder = copy.deepcopy(self.clip.vision_model)
-        else:
-            raise ValueError()
 
         if args.text_encoder == 'clip':
             self.text_encoder = copy.deepcopy(self.clip.text_model)
-        else:
-            raise ValueError()
 
-        if self.use_pretrained_map:
-            self.image_map = nn.Sequential(
-                copy.deepcopy(self.clip.visual_projection),
-                nn.ReLU(),
-                nn.Linear(self.clip.projection_dim, self.map_dim)
-            )
-            self.text_map = nn.Sequential(
-                copy.deepcopy(self.clip.text_projection),
-                nn.ReLU(),
-                nn.Linear(self.clip.projection_dim, self.map_dim)
-            )
-        else:
-            image_map_layers = [nn.Linear(self.image_encoder.config.hidden_size, self.map_dim), nn.Dropout(p=0.1)]
-            text_map_layers = [nn.Linear(self.text_encoder.config.hidden_size, self.map_dim), nn.Dropout(p=0.1)]
+        image_map_layers = [nn.Linear(self.image_encoder.config.hidden_size, self.map_dim), nn.Dropout(p=0.1)]
+        text_map_layers = [nn.Linear(self.text_encoder.config.hidden_size, self.map_dim), nn.Dropout(p=0.1)]
 
-            self.image_map = nn.Sequential(*image_map_layers)
-            self.text_map = nn.Sequential(*text_map_layers)
+        self.image_map = nn.Sequential(*image_map_layers)
+        self.text_map = nn.Sequential(*text_map_layers)
 
         del self.clip
 
@@ -83,12 +55,7 @@ class CLIPClassifier(pl.LightningModule):
         pre_output_layers = [nn.Dropout(p=0.4), nn.Linear(pre_output_input_dim, self.map_dim), nn.ReLU(), nn.Dropout(p=0.2)]
         self.pre_output = nn.Sequential(*pre_output_layers)
 
-        output_input_dim = self.map_dim
-        if self.dataset in ['fb-meme', 'tamil']:
-            self.output = nn.Linear(output_input_dim, 1)
-        elif self.dataset == 'prop':
-            self.output = nn.Linear(output_input_dim, 22)
-
+        self.output = nn.Linear(self.map_dim, 1)
         self.cross_entropy_loss = torch.nn.BCEWithLogitsLoss(reduction='mean')
 
         for _, p in self.image_encoder.named_parameters():
@@ -156,11 +123,6 @@ class CLIPClassifier(pl.LightningModule):
         output['accuracy'] = self.acc(preds, batch['labels'])
         output['auroc'] = self.auroc(preds_proxy, batch['labels'])
 
-        if self.dataset in ['tamil', 'prop']:
-            output['precision'] = self.precision_score(preds, batch['labels'])
-            output['recall'] = self.recall(preds, batch['labels'])
-            output['f1'] = self.f1(preds, batch['labels'])
-
         return output
 
     def training_step(self, batch, batch_idx):
@@ -169,12 +131,6 @@ class CLIPClassifier(pl.LightningModule):
         self.log('train/loss', output['loss'])
         self.log('train/accuracy', output['accuracy'])
         self.log('train/auroc', output['auroc'])
-
-        if self.dataset in ['tamil', 'prop']:
-            self.log('train/precision', output['precision'])
-            self.log('train/recall', output['recall'])
-            self.log('train/f1', output['f1'])
-
         return output['loss']
 
     def validation_step(self, batch, batch_idx):
@@ -188,12 +144,6 @@ class CLIPClassifier(pl.LightningModule):
             },
             on_epoch=True
         )
-
-        if self.dataset in ['tamil', 'prop']:
-            self.log('val/precision', output['precision'])
-            self.log('val/recall', output['recall'])
-            self.log('val/f1', output['f1'])
-
         return output['loss']
 
     def test_step(self, batch, batch_idx):
@@ -202,12 +152,6 @@ class CLIPClassifier(pl.LightningModule):
         self.log(f'test/accuracy', output['accuracy'])
         self.log(f'test/auroc', output['auroc'])
         self.log(f'test/loss', output['loss'])
-
-        if self.dataset in ['tamil', 'prop']:
-            self.log(f'test/precision', output['precision'])
-            self.log(f'test/recall', output['recall'])
-            self.log(f'test/f1', output['f1'])
-
         return output
 
     def on_train_epoch_end(self):
