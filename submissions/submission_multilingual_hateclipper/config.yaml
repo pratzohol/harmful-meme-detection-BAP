@@ -1,0 +1,34 @@
+exp_name: test-final
+
+# Datsaset-related
+dataset: rmmhs # [fb-meme, rmmhs]
+data_path: /home/pratzohol/google-drive/work-stuff/harmful-meme-detection/datasets/RMMHS
+text: original # [eaysocr, original]
+eval_mode: True
+checkpoint: ./run-1-easyocr-epoch=31.ckpt
+
+# CLIP-related
+clip_image_size: 224
+image_encoder: clip
+text_encoder: clip
+
+
+# Hateclipper-specific
+fusion: cross # [align, concat, cross]
+num_mapping_layers: 1
+map_dim: 32
+num_pre_output_layers: 1
+
+# Training-related
+devices: 0
+batch_size: 128
+lr: 0.001 # decimal is important otherwise it is read as string
+seed: 101
+weight_decay: 1.e-4
+
+# Pytorch Lightning-related
+max_epochs: 100
+max_steps: -1
+gradient_clip_val: 0.1
+log_every_n_steps: 30
+check_val_every_n_epoch: 1

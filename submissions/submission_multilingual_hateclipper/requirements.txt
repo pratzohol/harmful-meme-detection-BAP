@@ -1,0 +1,14 @@
+torch
+torchvision
+pytesseract
+opencv-python-headless
+scipy
+scikit-image
+ninja
+numpy
+easyocr
+tqdm
+pyyaml
+transformers
+pytorch_lightning
+pillow
