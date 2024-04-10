@@ -5,8 +5,8 @@ submissions/submission_2_llama/adapter_weights
 submissions/submission_2_llama/original_llama
 containers
 local_test
-submissions/submission_hateclipper/wandb
-submissions/submission_hateclipper/checkpoints
+wandb
+checkpoints
 models--openai--clip-vit-large-patch14
 *.ckpt
 .EasyOCR
