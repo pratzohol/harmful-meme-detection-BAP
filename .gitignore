@@ -10,3 +10,5 @@ checkpoints
 models--openai--clip-vit-large-patch14
 *.ckpt
 .EasyOCR
+.locks
+models--M-CLIP--XLM-Roberta-Large-Vit-L-14

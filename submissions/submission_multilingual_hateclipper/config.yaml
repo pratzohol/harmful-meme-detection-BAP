@@ -1,16 +1,16 @@
 exp_name: test-final
 
 # Datsaset-related
-dataset: rmmhs # [fb-meme, rmmhs]
-data_path: /home/pratzohol/google-drive/work-stuff/harmful-meme-detection/datasets/RMMHS
-text: original # [eaysocr, original]
-eval_mode: True
+dataset: fb-meme # [fb-meme, rmmhs]
+data_path: /home/pratzohol/google-drive/work-stuff/harmful-meme-detection/datasets/fb-meme
+text: easyocr # [eaysocr, original]
+eval_mode: False
 checkpoint: run-1-easyocr-epoch=31.ckpt
 
 # CLIP-related
 clip_image_size: 224
 image_encoder: clip
-text_encoder: clip
+text_encoder: xlm-roberta-large
 
 
 # Hateclipper-specific
@@ -21,7 +21,7 @@ num_pre_output_layers: 1
 
 # Training-related
 devices: 0
-batch_size: 16
+batch_size: 64
 lr: 0.001 # decimal is important otherwise it is read as string
 seed: 101
 weight_decay: 1.e-4

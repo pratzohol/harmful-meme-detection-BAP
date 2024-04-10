@@ -8,14 +8,15 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torchmetrics
-
+from multilingual_clip import pt_multilingual_clip
 from transformers import CLIPModel, AutoConfig, AutoModel
-
+from transformers import CLIPTokenizer, CLIPProcessor, AutoTokenizer
 
 class CLIPClassifier(pl.LightningModule):
     def __init__(self, args):
         super().__init__()
         self.dataset = args.dataset
+        self.args = args
 
         self.num_mapping_layers = args.num_mapping_layers
         self.map_dim = args.map_dim
@@ -34,12 +35,13 @@ class CLIPClassifier(pl.LightningModule):
         self.clip = CLIPModel.from_pretrained("openai/clip-vit-large-patch14", cache_dir="./")
         if args.image_encoder == 'clip':
             self.image_encoder = copy.deepcopy(self.clip.vision_model)
+            image_map_layers = [nn.Linear(self.image_encoder.config.hidden_size, self.map_dim), nn.Dropout(p=0.1)]
 
         if args.text_encoder == 'clip':
-            self.text_encoder = copy.deepcopy(self.clip.text_model)
-
-        image_map_layers = [nn.Linear(self.image_encoder.config.hidden_size, self.map_dim), nn.Dropout(p=0.1)]
-        text_map_layers = [nn.Linear(self.text_encoder.config.hidden_size, self.map_dim), nn.Dropout(p=0.1)]
+            text_map_layers = [nn.Linear(self.clip.text_model.config.hidden_size, self.map_dim), nn.Dropout(p=0.1)]
+        elif args.text_encoder == 'xlm-roberta-large':
+            self.text_encoder = pt_multilingual_clip.MultilingualCLIP.from_pretrained("M-CLIP/XLM-Roberta-Large-Vit-L-14", cache_dir="./")
+            text_map_layers = [nn.Linear(self.text_encoder.config.numDims, self.map_dim), nn.Dropout(p=0.1)]
 
         self.image_map = nn.Sequential(*image_map_layers)
         self.text_map = nn.Sequential(*text_map_layers)
@@ -71,14 +73,19 @@ class CLIPClassifier(pl.LightningModule):
         image_features = self.image_encoder(pixel_values=batch['pixel_values'][0]).pooler_output
         image_features = self.image_map(image_features)
 
-        if self.text_encoder_name == 'clip':
-            text_features = self.text_encoder(input_ids=batch['input_ids'], attention_mask=batch['attention_mask']).pooler_output
+        if self.args.text_encoder == 'clip':
+            text_output = self.text_processor([txt for txt in batch["text"]], padding=True, return_tensors="pt", truncation=True)
+            input_ids = text_output['input_ids']
+            attention_mask = text_output['attention_mask']
+            text_features = self.text_encoder(input_ids=input_ids, attention_mask=attention_mask).pooler_output
             text_features = self.text_map(text_features)
-        else:
-            raise ValueError()
+        elif self.args.text_encoder == 'xlm-roberta-large':
+            text_features = self.text_encoder([txt for txt in batch["text"]], tokenizer=self.text_processor)
+            text_features = self.text_map(text_features)
 
-        image_features = F.normalize(image_features, p=2, dim=1)  # [batch_size, d]
-        text_features = F.normalize(text_features, p=2, dim=1)  # [batch_size, d]
+        image_features = F.normalize(image_features, p=2, dim=1)
+        text_features = F.normalize(text_features, p=2, dim=1)
+
 
         if self.fusion == 'align':
             features = torch.mul(image_features, text_features)  # [batch_size, d]
@@ -100,7 +107,15 @@ class CLIPClassifier(pl.LightningModule):
         image_features = self.image_encoder(pixel_values=batch['pixel_values'][0]).pooler_output
         image_features = self.image_map(image_features)
 
-        text_features = self.text_encoder(input_ids=batch['input_ids'], attention_mask=batch['attention_mask']).pooler_output
+        # if self.args.text_encoder == 'clip':
+        #     text_output = self.text_processor([txt for txt in batch["text"]], padding=True, return_tensors="pt", truncation=True)
+        #     input_ids = text_output['input_ids']
+        #     attention_mask = text_output['attention_mask']
+        #     text_features = self.text_encoder(input_ids=input_ids, attention_mask=attention_mask).pooler_outpu
+        # elif self.args.text_encoder == 'xlm-roberta-large':
+        #     breakpoint()
+        #     text_features = self.text_encoder([txt for txt in batch["text"]], tokenizer=self.text_processor)
+
         text_features = self.text_map(text_features)
 
         image_features = F.normalize(image_features, p=2, dim=1)

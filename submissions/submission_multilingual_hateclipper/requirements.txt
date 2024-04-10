@@ -6,9 +6,10 @@ scipy
 scikit-image
 ninja
 numpy
-easyocr
+easyocr==1.6.2
 tqdm
 pyyaml
 transformers
 pytorch_lightning
 pillow
+multilingual_clip

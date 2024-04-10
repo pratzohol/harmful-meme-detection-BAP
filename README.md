@@ -121,3 +121,5 @@ All the     [Datasets for OSPC AI Singapore](https://drive.google.com/drive/fold
     - _run-6_ : (0.872, 0.835)
 
 8. So, based on above data and charts from wandb, I decided to go with `run-1-easyocr` (`run-9` was second best contender).
+9. Running the above model on translated val-set of fb-meme data, the (auroc, acc) obtained was (0.7456, 0.632)
+10. Running the above model on translated val-set (sampling randomly 500) of fb-meme data, the (auroc, acc) obtained was (0.761, 0.722)
