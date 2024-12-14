@@ -1,5 +1,9 @@
 # hateful-meme-detection
 
+## Leaderboard
+
+![image](https://github.com/user-attachments/assets/caebdd25-36b3-47f6-91fc-d58c90557768)
+
 ## Resources
 
 1. [Official site of OSPC](https://ospc.aisingapore.org/)
